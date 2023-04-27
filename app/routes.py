@@ -33,8 +33,10 @@ def create_planet():
 
 @planets_bp.route("", methods=['GET'])
 def handle_planets():
-    planets_as_dict = [vars(planet) for planet in planets]
-    return jsonify(planets_as_dict), 200
+
+    planets = Planet.query.all()
+    planets_response = [vars(planet) for planet in planets]
+    return jsonify(planets_response), 200
 
 def validate_planet(planet_id):
     try:
