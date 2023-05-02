@@ -24,14 +24,8 @@ def handle_planets():
     else:
         planets = Planet.query.all()
     
-    planets_response = []
-    for planet in planets:
-        planets_response.append(planet.to_dict())
+    planets_response = [Planet.to_dict(planet) for planet in planets]
     return jsonify(planets_response), 200
-
-    # planets = Planet.query.all()
-    # planets_response = [Planet.to_dict(planet) for planet in planets]
-    # return jsonify(planets_response), 200
 
 def validate_planet(planet_id):
     try:
@@ -39,9 +33,6 @@ def validate_planet(planet_id):
     except:
         abort(make_response({"message":f"planet {planet_id} invalid"}, 400))
 
-    # for planet in planets:
-    #     if planet.id == planet_id:
-    #         return planet
     planet = Planet.query.get(planet_id)
     
     if planet is None:
