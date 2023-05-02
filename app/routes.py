@@ -2,21 +2,6 @@ from flask import Blueprint, jsonify, abort, make_response, request
 from app import db
 from app.models.planet import Planet
 
-# # class Planet():
-# #     def __init__(self, id, name, description, has_rings):
-# #         self.id = id
-# #         self.name = name
-# #         self.description = description
-# #         self.has_rings = has_rings
-
-# # planets = [
-# #     Planet(1, "Mars", "red", True),
-# #     Planet(2, "Neptune", "blue", True),
-# #     Planet(3, "Saturn", "dark blue", True),
-# #     Planet(4, "Venus", "yellowish", True),
-# #     Planet(5, "Earth", "blue/green", True),
-# #     Planet(6, "Mercury", "red", True),
-# ]
 
 planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
 
@@ -33,10 +18,20 @@ def create_planet():
 
 @planets_bp.route("", methods=['GET'])
 def handle_planets():
-
-    planets = Planet.query.all()
-    planets_response = [Planet.to_dict(planet) for planet in planets]
+    name_query = request.args.get("name")
+    if name_query:
+        planets = Planet.query.filter_by(name=name_query).all()
+    else:
+        planets = Planet.query.all()
+    
+    planets_response = []
+    for planet in planets:
+        planets_response.append(planet.to_dict())
     return jsonify(planets_response), 200
+
+    # planets = Planet.query.all()
+    # planets_response = [Planet.to_dict(planet) for planet in planets]
+    # return jsonify(planets_response), 200
 
 def validate_planet(planet_id):
     try:
@@ -66,17 +61,6 @@ def handle_planet(planet_id):
         "has_rings": planet.has_rings
     }
 
-# @planets_bp.route("/<planet_id>", methods=["GET"])
-# def single_planet(planet_id):
-#     planet = validate_planet(planet_id)
-#     Planet.query.get(planet_id)
-
-#     return {
-#         "id": planet.id,
-#         "name": planet.name,
-#         "description": planet.description,
-#         "has_rings": planet.has_rings
-#     }
 
 @planets_bp.route("/<planet_id>", methods=["PUT"])
 def update_planet(planet_id):
