@@ -6,14 +6,6 @@ class Planet(db.Model):
     description = db.Column(db.String)
     has_rings = db.Column(db.Boolean)
 
-    # def to_dict(self):
-    #     return {
-    #         "id": self.id,
-    #         "name": self.name,
-    #         "description": self.description,
-    #         "has_rings": self.has_rings
-    #     }
-
     def to_dict(self):
         planet_as_dict = {}
         planet_as_dict["id"] = self.id
@@ -29,5 +21,3 @@ class Planet(db.Model):
                             description=planet_data["description"],
                             has_rings=planet_data["has_rings"])
         return new_planet
-
-
